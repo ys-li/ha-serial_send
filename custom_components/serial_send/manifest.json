@@ -1,0 +1,10 @@
+{
+  "domain": "serial_send",
+  "name": "Simple Serial Send Interface",
+  "requirements": [
+      "pyserial==3.5"
+  ],
+  "iot_class": "assumed_state",
+  "version": "0.1.0"
+}
+  

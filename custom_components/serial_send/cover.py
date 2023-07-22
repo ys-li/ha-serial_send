@@ -17,6 +17,8 @@ from homeassistant.components.cover import (
     PLATFORM_SCHEMA,
     STATE_OPENING,
     STATE_CLOSING,
+    STATE_CLOSED,
+    STATE_OPEN,
     CoverEntityFeature,
 )
 from homeassistant.const import CONF_NAME
@@ -82,17 +84,22 @@ class SerialSendCover(CoverEntity):
         self._serial_cmd_end_close = config[CONF_SERIAL_CMD_END_CLOSE]
         self._serial_cmd_interval = config[CONF_SERIAL_INTERVAL]
         self._name = config[CONF_NAME]
-        self._state = None
+        self._state = STATE_CLOSED
 
     @property
     def name(self) -> str:
         """Return the display name of this light."""
         return self._name
+    
+    @property
+    def unique_id(self) -> str:
+        """Return a unique, Home Assistant friendly identifier for this entity."""
+        return self._serial_cmd_start_open.replace(" ", "") # use open command as the unique_id
 
     @property
     def is_closed(self) -> bool | None:
         """This implementation does not support returning the state of the cover."""
-        return None
+        return self._state == STATE_CLOSED
 
     @property
     def is_closing(self) -> bool:
@@ -119,6 +126,7 @@ class SerialSendCover(CoverEntity):
             self._state = None
             self._serial.set_is_busy(False)
             self._serial.send_cmd(self._serial_cmd_end_open)
+        self._state = STATE_OPEN
 
     async def async_close_cover(self, **kwargs):
         """Close cover."""
@@ -130,6 +138,7 @@ class SerialSendCover(CoverEntity):
             self._state = None
             self._serial.set_is_busy(False)
             self._serial.send_cmd(self._serial_cmd_end_close)
+        self._state = STATE_CLOSED
 
     def stop_cover(self, **kwargs):
         """Stop the cover."""
@@ -141,3 +150,4 @@ class SerialSendCover(CoverEntity):
             self._state = None
             self._serial.set_is_busy(False)
             self._serial.send_cmd(self._serial_cmd_end_open)
+        self._state = STATE_OPEN

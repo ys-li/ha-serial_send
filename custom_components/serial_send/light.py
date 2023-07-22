@@ -57,7 +57,13 @@ class SerialSendLight(LightEntity):
         self._serial_cmd_turn_on = config[CONF_SERIAL_CMD_TURN_ON]
         self._serial_cmd_turn_off = config[CONF_SERIAL_CMD_TURN_OFF]
         self._name = config[CONF_NAME]
-
+        self._is_on = False
+        
+    @property
+    def unique_id(self) -> str:
+        """Return a unique, Home Assistant friendly identifier for this entity."""
+        return self._serial_cmd_turn_on.replace(" ", "") # use open command as the unique_id
+    
     @property
     def name(self) -> str:
         """Return the display name of this light."""
@@ -66,15 +72,14 @@ class SerialSendLight(LightEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
-        return None
+        return self._is_on
 
     def turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on."""
         self._serial.send_cmd(self._serial_cmd_turn_on)
+        self._is_on = True
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
         self._serial.send_cmd(self._serial_cmd_turn_off)
-
-    def update(self) -> None:
-        pass
+        self._is_on = False

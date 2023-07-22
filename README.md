@@ -8,8 +8,6 @@ Entities implemented currently includes:
 - **Light** 
 - **Cover**
 
-Does not track the state currently.
-
 ## Configuration file
 ```yaml
 light:

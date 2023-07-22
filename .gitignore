@@ -101,3 +101,6 @@ virtualization/vagrant/config
 
 # Typing
 .mypy_cache
+
+# Configs
+floorplan
